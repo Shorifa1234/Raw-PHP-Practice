@@ -1,3 +1,37 @@
+<?php
+include('connect.php');
+
+if (isset($_POST['submit'])) {
+    try {
+        $stmt = $con->prepare("INSERT INTO student (student_name, phone_no, age, date_of_birth) VALUES (:student_name, :phone_no, :age, :date_of_birth)");
+
+        for ($i = 0; $i < count($_POST['slno']); $i++) {
+            $student_name = $_POST['student'][$i];
+            $phone_no = $_POST['phone'][$i];
+            $age = $_POST['age'][$i];
+            $date_of_birth = $_POST['dob'][$i];
+
+            if ($student_name !== '' && $phone_no !== '' && $age !== '' && $date_of_birth !== '') {
+                $stmt->bindParam(':student_name', $student_name);
+                $stmt->bindParam(':phone_no', $phone_no);
+                $stmt->bindParam(':age', $age);
+                $stmt->bindParam(':date_of_birth', $date_of_birth);
+
+                $stmt->execute();
+            } else {
+                echo '<div class="alert alert-danger" role="alert">Error submitting data</div>';
+            }
+        }
+
+        echo "<script type='text/javascript'>";
+        echo "alert('Submitted Successfully')";
+        echo "</script>";
+    } catch (PDOException $e) {
+        echo '<br>' . $e->getMessage();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
